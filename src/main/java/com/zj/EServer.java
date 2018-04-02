@@ -19,30 +19,26 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 public class EServer {
 
 
-    public static final String HOST = "tcp://192.168.88.18:1883";
+//    public static final String HOST = "tcp://60.205.114.177:1883";
+    public static final String HOST = "tcp://127.0.0.1:1883";
     public static final String TOPIC = "toclient";
     public static final String TOPIC125 = "toclient/125";
-    private static final String clientid = "server";
+
 
     private MqttClient client;
     private MqttTopic topic;
-    private String userName = "mpc";
-    private String passWord = "123456";
+//    private String userName = "admin";
+//    private String passWord = "duduadmin";
 
     private MqttMessage message;
 
     public EServer() throws MqttException {
         // MemoryPersistence设置clientid的保存形式，默认为以内存保存
-        client = new MqttClient(HOST, clientid, new MemoryPersistence());
-        connect();
-    }
-
-
-    private void connect() {
+        client = new MqttClient(HOST, MqttClient.generateClientId(), new MemoryPersistence());
         MqttConnectOptions options = new MqttConnectOptions();
         options.setCleanSession(false);
-        options.setUserName(userName);
-        options.setPassword(passWord.toCharArray());
+//        options.setUserName(userName);
+//        options.setPassword(passWord.toCharArray());
         // 设置超时时间
         options.setConnectionTimeout(10);
         // 设置会话心跳时间
@@ -55,6 +51,7 @@ public class EServer {
             e.printStackTrace();
         }
     }
+
 
     public void publish(MqttTopic topic , MqttMessage message) throws MqttPersistenceException,
             MqttException {
@@ -70,10 +67,19 @@ public class EServer {
         server.message = new MqttMessage();
         server.message.setQos(1);   // 保证消息能到达一次
         server.message.setRetained(true);
-        server.message.setPayload("给客户端124推送的信息".getBytes());
-        server.publish(server.topic , server.message);
+//        server.message.setPayload("给客户端124推送的信息".getBytes());
 
-
-        System.out.println(server.message.isRetained() + "------ratained状态");
+        int i = 0;
+        while (true) {
+            try {
+                Thread.sleep(2000L);
+                server.message.setPayload(("send: " + i).getBytes());
+                i++;
+                server.publish(server.topic , server.message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+//        System.out.println(server.message.isRetained() + "------ratained状态");
     }
 }

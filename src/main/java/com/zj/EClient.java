@@ -17,23 +17,23 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 public class EClient {
 
-    public static final String HOST = "tcp://192.168.88.18:1883";
+//    public static final String HOST = "tcp://60.205.114.177:1883";
+    public static final String HOST = "tcp://127.0.0.1:1883";
     public static final String TOPIC = "toclient";
-    private static final String clientid = "client124";
     private MqttClient client;
     private MqttConnectOptions options;
-    private String userName = "mpc";
-    private String passWord = "123456";
+//    private String userName = "admin";
+//    private String passWord = "duduadmin";
     @SuppressWarnings("unused")
     private ScheduledExecutorService scheduler;
 
     private void start() {
         try {
-            client = new MqttClient(HOST, clientid, new MemoryPersistence());
+            client = new MqttClient(HOST, MqttClient.generateClientId(), new MemoryPersistence());
             options = new MqttConnectOptions();
             options.setCleanSession(false);
-            options.setUserName(userName);
-            options.setPassword(passWord.toCharArray());
+//            options.setUserName(userName);
+//            options.setPassword(passWord.toCharArray());
             options.setConnectionTimeout(10);
             options.setKeepAliveInterval(20);
             client.setCallback(new EPushCallback());
